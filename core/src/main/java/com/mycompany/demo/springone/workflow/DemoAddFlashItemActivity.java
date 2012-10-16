@@ -6,7 +6,7 @@ import org.broadleafcommerce.core.inventory.service.InventoryService;
 import org.broadleafcommerce.core.workflow.BaseActivity;
 import org.broadleafcommerce.core.workflow.ProcessContext;
 
-public class UpdateFlashItemActivity extends BaseActivity {
+public class DemoAddFlashItemActivity extends BaseActivity {
 	
 	@Resource(name="blInventoryService")
 	protected InventoryService inventoryService;

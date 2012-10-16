@@ -25,6 +25,10 @@
 	
 	<bean id="org.broadleafcommerce.core.order.service.OrderService" 
 		class="com.mycompany.demo.springone.service.DemoOrderServiceImpl" />
+		
+	<bean id="demoCartExpirationEvent" 
+		class="com.mycompany.demo.springone.service.DemoCartExpirationEvent" 
+		scope="prototype" />
 	
 	<bean id="blAddItemWorkflow" class="org.broadleafcommerce.core.workflow.SequenceProcessor">
 		<property name="processContextFactory">
@@ -47,7 +51,7 @@
 					class="org.broadleafcommerce.core.order.service.workflow.VerifyFulfillmentGroupItemsActivity" />
 					
 				<bean 
-					class="com.mycompany.demo.springone.workflow.AddFlashItemActivity" />
+					class="com.mycompany.demo.springone.workflow.DemoAddFlashItemActivity" />
 			</list>
 		</property>
 		<property name="defaultErrorHandler" ref="blDefaultErrorHandler" />
@@ -76,7 +80,7 @@
 					class="org.broadleafcommerce.core.order.service.workflow.VerifyFulfillmentGroupItemsActivity" />
 					
 				<bean
-					class="com.mycompany.demo.springone.workflow.UpdateFlashItemActivity" />
+					class="com.mycompany.demo.springone.workflow.DemoUpdateFlashItemActivity" />
 			</list>
 		</property>
 		<property name="defaultErrorHandler" ref="blDefaultErrorHandler" />
@@ -103,7 +107,7 @@
 					class="org.broadleafcommerce.core.order.service.workflow.VerifyFulfillmentGroupItemsActivity" />
 					
 				<bean 
-					class="com.mycompany.demo.springone.workflow.RemoveFlashItemActivity" />
+					class="com.mycompany.demo.springone.workflow.DemoRemoveFlashItemActivity" />
 			</list>
 		</property>
 		<property name="defaultErrorHandler" ref="blDefaultErrorHandler" />

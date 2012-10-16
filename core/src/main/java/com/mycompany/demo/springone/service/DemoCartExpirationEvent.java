@@ -7,7 +7,7 @@ import javax.annotation.Resource;
 
 import org.springframework.scheduling.TaskScheduler;
 
-public class CartExpirationEvent implements Runnable {
+public class DemoCartExpirationEvent implements Runnable {
 
 	private static final HashSet<Long> cartsInQueue = new HashSet<Long>();
 	

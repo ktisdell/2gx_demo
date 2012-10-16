@@ -4,6 +4,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
 	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/jee
 		http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
@@ -14,10 +15,17 @@
         http://www.springframework.org/schema/tx
         http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
         http://www.springframework.org/schema/aop
-        http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
+        http://www.springframework.org/schema/aop/spring-aop-3.1.xsd 
+        http://www.springframework.org/schema/task
+        http://www.springframework.org/schema/task/spring-task-3.1.xsd">
 
 	<!-- Shared properties between admin and core go here -->
-
+	
+	<task:scheduler id="cartExpirationTaskScheduler" pool-size="3"/>
+	
+	<bean id="org.broadleafcommerce.core.order.service.OrderService" 
+		class="com.mycompany.demo.springone.service.DemoOrderServiceImpl" />
+	
 	<bean id="blAddItemWorkflow" class="org.broadleafcommerce.core.workflow.SequenceProcessor">
 		<property name="processContextFactory">
 			<bean
@@ -37,6 +45,9 @@
 					class="org.broadleafcommerce.core.order.service.workflow.PriceOrderIfNecessaryActivity" />
 				<bean
 					class="org.broadleafcommerce.core.order.service.workflow.VerifyFulfillmentGroupItemsActivity" />
+					
+				<bean 
+					class="com.mycompany.demo.springone.workflow.AddFlashItemActivity" />
 			</list>
 		</property>
 		<property name="defaultErrorHandler" ref="blDefaultErrorHandler" />
@@ -63,6 +74,9 @@
 					class="org.broadleafcommerce.core.order.service.workflow.PriceOrderIfNecessaryActivity" />
 				<bean
 					class="org.broadleafcommerce.core.order.service.workflow.VerifyFulfillmentGroupItemsActivity" />
+					
+				<bean
+					class="com.mycompany.demo.springone.workflow.UpdateFlashItemActivity" />
 			</list>
 		</property>
 		<property name="defaultErrorHandler" ref="blDefaultErrorHandler" />
@@ -87,9 +101,27 @@
 					class="org.broadleafcommerce.core.order.service.workflow.PriceOrderIfNecessaryActivity" />
 				<bean
 					class="org.broadleafcommerce.core.order.service.workflow.VerifyFulfillmentGroupItemsActivity" />
+					
+				<bean 
+					class="com.mycompany.demo.springone.workflow.RemoveFlashItemActivity" />
 			</list>
 		</property>
 		<property name="defaultErrorHandler" ref="blDefaultErrorHandler" />
 	</bean>
 
+	<bean id="blCheckoutWorkflow" class="org.broadleafcommerce.core.workflow.SequenceProcessor">
+		<property name="processContextFactory">
+			<bean class="org.broadleafcommerce.core.checkout.service.workflow.CheckoutProcessContextFactory"/>
+		</property>
+		<property name="activities">
+			<list>
+                <bean class="org.broadleafcommerce.core.offer.service.workflow.VerifyCustomerMaxOfferUsesActivity"/>
+                <!-- bean class="org.broadleafcommerce.core.inventory.service.workflow.DecrementInventoryActivity"/-->
+				<bean class="org.broadleafcommerce.core.checkout.service.workflow.PaymentServiceActivity"/>
+                <bean class="org.broadleafcommerce.core.offer.service.workflow.RecordOfferUsageActivity"/>
+				<bean class="org.broadleafcommerce.core.checkout.service.workflow.CompleteOrderActivity"/>
+			</list>
+		</property>
+		<property name="defaultErrorHandler" ref="blInventoryCompensatingCheckoutErrorHandler"/>
+	</bean>
 </beans>

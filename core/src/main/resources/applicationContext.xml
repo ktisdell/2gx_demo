@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:jee="http://www.springframework.org/schema/jee"
-       xmlns:aop="http://www.springframework.org/schema/aop"
-       xmlns:tx="http://www.springframework.org/schema/tx"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
 		http://www.springframework.org/schema/jee
 		http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
 		http://www.springframework.org/schema/beans
@@ -17,7 +15,81 @@
         http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
         http://www.springframework.org/schema/aop
         http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
-        
-        <!-- Shared properties between admin and core go here -->
-        
+
+	<!-- Shared properties between admin and core go here -->
+
+	<bean id="blAddItemWorkflow" class="org.broadleafcommerce.core.workflow.SequenceProcessor">
+		<property name="processContextFactory">
+			<bean
+				class="org.broadleafcommerce.core.order.service.workflow.CartOperationProcessContextFactory" />
+		</property>
+		<property name="activities">
+			<list>
+				<bean
+					class="org.broadleafcommerce.core.order.service.workflow.add.ValidateAddRequestActivity" />
+				<bean
+					class="org.broadleafcommerce.core.order.service.workflow.CheckAvailabilityActivity" />
+				<bean
+					class="org.broadleafcommerce.core.order.service.workflow.add.AddOrderItemActivity" />
+				<bean
+					class="org.broadleafcommerce.core.order.service.workflow.add.AddFulfillmentGroupItemActivity" />
+				<bean
+					class="org.broadleafcommerce.core.order.service.workflow.PriceOrderIfNecessaryActivity" />
+				<bean
+					class="org.broadleafcommerce.core.order.service.workflow.VerifyFulfillmentGroupItemsActivity" />
+			</list>
+		</property>
+		<property name="defaultErrorHandler" ref="blDefaultErrorHandler" />
+	</bean>
+
+	<bean id="blUpdateItemWorkflow" class="org.broadleafcommerce.core.workflow.SequenceProcessor">
+		<property name="processContextFactory">
+			<bean
+				class="org.broadleafcommerce.core.order.service.workflow.CartOperationProcessContextFactory" />
+		</property>
+		<property name="activities">
+			<list>
+				<bean
+					class="org.broadleafcommerce.core.order.service.workflow.update.ValidateUpdateRequestActivity" />
+				<bean
+					class="org.broadleafcommerce.core.order.service.workflow.CheckAvailabilityActivity" />
+				<bean
+					class="org.broadleafcommerce.core.order.service.workflow.update.UpdateOrderItemActivity" />
+				<bean
+					class="org.broadleafcommerce.core.order.service.workflow.update.UpdateOrderMultishipOptionActivity" />
+				<bean
+					class="org.broadleafcommerce.core.order.service.workflow.update.UpdateFulfillmentGroupItemActivity" />
+				<bean
+					class="org.broadleafcommerce.core.order.service.workflow.PriceOrderIfNecessaryActivity" />
+				<bean
+					class="org.broadleafcommerce.core.order.service.workflow.VerifyFulfillmentGroupItemsActivity" />
+			</list>
+		</property>
+		<property name="defaultErrorHandler" ref="blDefaultErrorHandler" />
+	</bean>
+
+	<bean id="blRemoveItemWorkflow" class="org.broadleafcommerce.core.workflow.SequenceProcessor">
+		<property name="processContextFactory">
+			<bean
+				class="org.broadleafcommerce.core.order.service.workflow.CartOperationProcessContextFactory" />
+		</property>
+		<property name="activities">
+			<list>
+				<bean
+					class="org.broadleafcommerce.core.order.service.workflow.remove.ValidateRemoveRequestActivity" />
+				<bean
+					class="org.broadleafcommerce.core.order.service.workflow.remove.RemoveOrderMultishipOptionActivity" />
+				<bean
+					class="org.broadleafcommerce.core.order.service.workflow.remove.RemoveFulfillmentGroupItemActivity" />
+				<bean
+					class="org.broadleafcommerce.core.order.service.workflow.remove.RemoveOrderItemActivity" />
+				<bean
+					class="org.broadleafcommerce.core.order.service.workflow.PriceOrderIfNecessaryActivity" />
+				<bean
+					class="org.broadleafcommerce.core.order.service.workflow.VerifyFulfillmentGroupItemsActivity" />
+			</list>
+		</property>
+		<property name="defaultErrorHandler" ref="blDefaultErrorHandler" />
+	</bean>
+
 </beans>

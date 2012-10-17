@@ -48,16 +48,16 @@ public class DemoAddFlashItemActivity extends BaseActivity implements Applicatio
         HashMap<Sku, Integer> inventoryToDecrement = new HashMap<Sku, Integer>();
         
         //Find the sku
-        DemoSku sku = null;
+        Sku sku = null;
         if (skuId != null) {
-            sku = (DemoSku)catalogService.findSkuById(skuId);
+            sku = catalogService.findSkuById(skuId);
         }
         
         if (sku == null) {
 	        for (OrderItem oi : order.getOrderItems()) {
 				if (oi.getId().equals(request.getItemRequest().getOrderItemId())) {
 					if (oi instanceof DiscreteOrderItem) {
-						sku = (DemoSku)((DiscreteOrderItem)oi).getSku();
+						sku = ((DiscreteOrderItem)oi).getSku();
 					}
 					break;
 				}
@@ -65,14 +65,16 @@ public class DemoAddFlashItemActivity extends BaseActivity implements Applicatio
         }
         
         //Decrement inventory
-        if (sku != null && sku.getFlashSellable()) {
-	        inventoryToDecrement.put(sku, request.getItemRequest().getQuantity());
-	        inventoryService.decrementInventory(inventoryToDecrement);
-	        
-	        //Schedule the cart to expire
-	        DemoCartExpirationEvent event = (DemoCartExpirationEvent)this.context.getBean("demoCartExpirationEvent");
-	        order.setExpirationDate(orderService.getNextExpirationDate());
-	        event.schedule(order.getId(), order.getExpirationDate());
+        if (sku != null && sku instanceof DemoSku) {
+	        if (((DemoSku)sku).getFlashSellable()) {
+		        inventoryToDecrement.put(sku, request.getItemRequest().getQuantity());
+		        inventoryService.decrementInventory(inventoryToDecrement);
+		        
+		        //Schedule the cart to expire
+		        DemoCartExpirationEvent event = (DemoCartExpirationEvent)this.context.getBean("demoCartExpirationEvent");
+		        order.setExpirationDate(orderService.getNextExpirationDate());
+		        event.schedule(order.getId(), order.getExpirationDate());
+	        }
         }
         
         return context;

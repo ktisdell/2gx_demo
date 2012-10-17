@@ -45,18 +45,29 @@ public class DemoRemoveFlashItemActivity extends BaseActivity implements Applica
 		OrderItem orderItem = orderItemService.readOrderItemById(orderItemRequestDTO.getOrderItemId());
         
 		if (orderItem instanceof DiscreteOrderItem) {
-			DemoSku demoSku = (DemoSku)((DiscreteOrderItem)orderItem).getSku();
-			if (demoSku.getFlashSellable()) {
-				HashMap<Sku, Integer> inventoryToIncrement = new HashMap<Sku, Integer>();
-				inventoryToIncrement.put(demoSku, orderItem.getQuantity());
-				inventoryService.incrementInventory(inventoryToIncrement);
+			Sku sku = ((DiscreteOrderItem)orderItem).getSku();
+			if (sku instanceof DemoSku) {
+				DemoSku demoSku = (DemoSku)sku;
+				if (demoSku.getFlashSellable()) {
+					HashMap<Sku, Integer> inventoryToIncrement = new HashMap<Sku, Integer>();
+					inventoryToIncrement.put(demoSku, orderItem.getQuantity());
+					inventoryService.incrementInventory(inventoryToIncrement);
+				}
 			}
 		}
 		
-		//Schedule the cart to expire
-        DemoCartExpirationEvent event = (DemoCartExpirationEvent)this.context.getBean("demoCartExpirationEvent");
-        order.setExpirationDate(orderService.getNextExpirationDate());
-        event.schedule(order.getId(), order.getExpirationDate());
+        for (OrderItem item : order.getOrderItems()) {
+        	if (item instanceof DiscreteOrderItem) {
+        		Sku sku = ((DiscreteOrderItem)item).getSku();
+        		if (sku instanceof DemoSku && ((DemoSku)sku).getFlashSellable()) {
+        			//Schedule the cart to expire
+        	        DemoCartExpirationEvent event = (DemoCartExpirationEvent)this.context.getBean("demoCartExpirationEvent");
+        			order.setExpirationDate(orderService.getNextExpirationDate());
+        			event.schedule(order.getId(), order.getExpirationDate());
+        			break;
+        		}
+        	}
+        }
         
         return context;
     }

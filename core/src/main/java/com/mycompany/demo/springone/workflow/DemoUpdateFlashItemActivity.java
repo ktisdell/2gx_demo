@@ -46,13 +46,13 @@ public class DemoUpdateFlashItemActivity extends BaseActivity implements Applica
         HashMap<Sku, Integer> inventoryToChange = new HashMap<Sku, Integer>();
         
         //First, get the Sku
-        DemoSku sku = null;
+        Sku sku = null;
         if (skuId != null) {
-            sku = (DemoSku)catalogService.findSkuById(skuId);
+            sku = catalogService.findSkuById(skuId);
         }
         
         //Check if this logic even applies
-        if (sku.getFlashSellable()) {
+        if (sku instanceof DemoSku && ((DemoSku)sku).getFlashSellable()) {
         	//Find the inventory delta
 	        Integer inventory = request.getOrderItemQuantityDelta();
 	        if (inventory == 0) {

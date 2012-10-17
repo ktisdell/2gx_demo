@@ -34,7 +34,6 @@ public class DemoCartExpirationServiceImpl implements
 		}
 		
 		if (OrderStatus.IN_PROCESS.equals(cart.getStatus())) {
-		    System.out.println(cart.getExpirationDate().getTime() + " " + System.currentTimeMillis());
 			if (cart.getExpirationDate() != null && 
 					cart.getExpirationDate().getTime() <= System.currentTimeMillis()) {
 				

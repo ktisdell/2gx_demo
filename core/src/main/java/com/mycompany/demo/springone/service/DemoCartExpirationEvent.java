@@ -11,8 +11,8 @@ public class DemoCartExpirationEvent implements Runnable {
 
 	private static final HashSet<Long> cartsInQueue = new HashSet<Long>();
 	
-	@Resource(name="blOrderService")
-	private DemoOrderService orderService;
+	@Resource(name="demoCartExpirationService")
+	private DemoCartExpirationService cartExpirationService;
 	
 	@Resource(name="cartExpirationTaskScheduler")
 	private TaskScheduler taskScheduler;
@@ -28,7 +28,7 @@ public class DemoCartExpirationEvent implements Runnable {
 			if (cartId == null) {
 				return;
 			}
-			Date expiration = orderService.expireCart(cartId);
+			Date expiration = cartExpirationService.expireCart(cartId);
 			if (expiration != null) {
 				//if the cart is not expired, then reschedule...
 				taskScheduler.schedule(this, expiration);
@@ -38,6 +38,7 @@ public class DemoCartExpirationEvent implements Runnable {
 				}
 			}
 		} catch(Exception e) {
+			e.printStackTrace();
 			synchronized (cartsInQueue) {
 				cartsInQueue.remove(cartId);
 			}
@@ -47,15 +48,12 @@ public class DemoCartExpirationEvent implements Runnable {
 	public void schedule(Long cartId, Date dateToExpire) {
 		this.cartId = cartId;
 		synchronized (cartsInQueue) {
+			if (cartsInQueue.contains(cartId)) {
+				return;
+			}
 			cartsInQueue.add(cartId);
 		}
 		taskScheduler.schedule(this, dateToExpire);
-	}
-	
-	public static boolean isCartExpirationScheduled(Long cartId) {
-		synchronized (cartsInQueue) {
-			return cartsInQueue.contains(cartId);
-		}
 	}
 	
 }

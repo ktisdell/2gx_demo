@@ -20,5 +20,7 @@
         
         <!-- This file will contain bean overrides for extensions of Broadleaf entities -->
         <!-- For example, if you have a custom class that extends CustomerImpl, you would note that here -->
+        <bean id="org.broadleafcommerce.core.order.domain.Order" class="com.mycompany.demo.springone.entity.DemoOrderImpl" scope="prototype"/>
+        <bean id="org.broadleafcommerce.core.catalog.domain.Sku" class="com.mycompany.demo.springone.entity.DemoSkuImpl" scope="prototype"/>
         
 </beans>

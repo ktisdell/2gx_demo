@@ -19,12 +19,11 @@
         http://www.springframework.org/schema/task
         http://www.springframework.org/schema/task/spring-task-3.1.xsd">
 
-	<!-- Shared properties between admin and core go here -->
+	<!-- Shared properties between admin and site go here -->
 	
 	<task:scheduler id="cartExpirationTaskScheduler" pool-size="3"/>
 	
-	<bean id="org.broadleafcommerce.core.order.service.OrderService" 
-		class="com.mycompany.demo.springone.service.DemoOrderServiceImpl" />
+	<context:component-scan base-package="com.mycompany.demo.springone" />
 		
 	<bean id="demoCartExpirationEvent" 
 		class="com.mycompany.demo.springone.service.DemoCartExpirationEvent" 
@@ -95,6 +94,8 @@
 			<list>
 				<bean
 					class="org.broadleafcommerce.core.order.service.workflow.remove.ValidateRemoveRequestActivity" />
+				<bean 
+					class="com.mycompany.demo.springone.workflow.DemoRemoveFlashItemActivity" />
 				<bean
 					class="org.broadleafcommerce.core.order.service.workflow.remove.RemoveOrderMultishipOptionActivity" />
 				<bean
@@ -105,9 +106,6 @@
 					class="org.broadleafcommerce.core.order.service.workflow.PriceOrderIfNecessaryActivity" />
 				<bean
 					class="org.broadleafcommerce.core.order.service.workflow.VerifyFulfillmentGroupItemsActivity" />
-					
-				<bean 
-					class="com.mycompany.demo.springone.workflow.DemoRemoveFlashItemActivity" />
 			</list>
 		</property>
 		<property name="defaultErrorHandler" ref="blDefaultErrorHandler" />

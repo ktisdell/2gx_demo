@@ -29,18 +29,24 @@
 				&nbsp; 
 				<span class="headerCartItemsCount" th:text="${cart.itemCount}" />
 				<span class="headerCartItemsCountWord" th:text="${cart.itemCount == 1} ? #{home.item} :  #{home.items}" />
+            
                 <span id="headerExpires" 
                     th:classappend="${cart instanceof T(org.broadleafcommerce.core.order.domain.NullOrderImpl) or cart.getSecondsUntilExpiration() == 0}? 'hidden'">
 
-                    <span id="expiresSeconds"
-                          th:unless="${cart instanceof T(org.broadleafcommerce.core.order.domain.NullOrderImpl)}" 
-                          th:text="${cart.getSecondsUntilExpiration()}" />
-                          
-                    <span id="expiresSeconds"
-                          th:if="${cart instanceof T(org.broadleafcommerce.core.order.domain.NullOrderImpl)}">0</span>
                           
                     <span id="countdownMessage">
-                        Expires in <span id="expiresTime" th:text="${'0:' + cart.getSecondsUntilExpiration()}"></span>
+                        Expires in 
+                        
+                        <span id="expiresSeconds"
+                              th:unless="${cart instanceof T(org.broadleafcommerce.core.order.domain.NullOrderImpl)}" 
+                              th:text="${cart.getSecondsUntilExpiration()}" />
+                              
+                        <span id="expiresSeconds"
+                              th:if="${cart instanceof T(org.broadleafcommerce.core.order.domain.NullOrderImpl)}">0</span>
+                              
+                        <span id="expiresTime" 
+                            th:unless="${cart instanceof T(org.broadleafcommerce.core.order.domain.NullOrderImpl)}"
+                            th:text="${'0:' + cart.getSecondsUntilExpiration()}"></span>
                     </span>
                     
                     <span id="expiredMessage" class="hidden">Expired!</span>

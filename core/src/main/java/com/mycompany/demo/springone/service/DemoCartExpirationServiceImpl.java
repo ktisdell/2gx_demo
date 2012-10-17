@@ -1,11 +1,5 @@
 package com.mycompany.demo.springone.service;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-
-import javax.annotation.Resource;
-
 import org.broadleafcommerce.core.order.domain.DiscreteOrderItem;
 import org.broadleafcommerce.core.order.domain.OrderItem;
 import org.broadleafcommerce.core.order.service.OrderService;
@@ -17,6 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mycompany.demo.springone.entity.DemoOrder;
 import com.mycompany.demo.springone.entity.DemoSku;
+
+import javax.annotation.Resource;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 
 @Service("demoCartExpirationService")
 public class DemoCartExpirationServiceImpl implements
@@ -34,6 +34,7 @@ public class DemoCartExpirationServiceImpl implements
 		}
 		
 		if (OrderStatus.IN_PROCESS.equals(cart.getStatus())) {
+		    System.out.println(cart.getExpirationDate().getTime() + " " + System.currentTimeMillis());
 			if (cart.getExpirationDate() != null && 
 					cart.getExpirationDate().getTime() <= System.currentTimeMillis()) {
 				

@@ -5,10 +5,7 @@ import org.broadleafcommerce.core.order.domain.OrderImpl;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
-import java.sql.Time;
 import java.util.Date;
 
 @Entity
@@ -18,7 +15,6 @@ public class DemoOrderImpl extends OrderImpl implements DemoOrder {
 	private static final long serialVersionUID = 1L;
 
 	@Column(name="EXPIRY_DATE")
-	@Temporal(TemporalType.TIME)
 	protected Date expirationDate;
 	
 	@Override
@@ -32,14 +28,12 @@ public class DemoOrderImpl extends OrderImpl implements DemoOrder {
 	}
 	
     @Override
-	@SuppressWarnings("deprecation")
 	public Long getSecondsUntilExpiration() {
-	    Date currentDate = new Date();
-	    Date todaysTime = new Time(currentDate.getHours(), currentDate.getMinutes(), currentDate.getSeconds());
+	    Date now = new Date();
 	    
 	    Long secondsUntilExpiration = 0L;
 	    if (expirationDate != null) {
-	        secondsUntilExpiration = (expirationDate.getTime() - todaysTime.getTime()) / 1000;
+	        secondsUntilExpiration = (expirationDate.getTime() - now.getTime()) / 1000;
 	    }
 	    
 	    return secondsUntilExpiration;

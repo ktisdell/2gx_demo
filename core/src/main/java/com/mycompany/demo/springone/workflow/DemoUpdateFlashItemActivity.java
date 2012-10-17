@@ -7,6 +7,8 @@ import javax.annotation.Resource;
 import org.broadleafcommerce.core.catalog.domain.Sku;
 import org.broadleafcommerce.core.catalog.service.CatalogService;
 import org.broadleafcommerce.core.inventory.service.InventoryService;
+import org.broadleafcommerce.core.order.domain.DiscreteOrderItem;
+import org.broadleafcommerce.core.order.domain.OrderItem;
 import org.broadleafcommerce.core.order.service.OrderItemService;
 import org.broadleafcommerce.core.order.service.workflow.CartOperationContext;
 import org.broadleafcommerce.core.order.service.workflow.CartOperationRequest;
@@ -75,10 +77,19 @@ public class DemoUpdateFlashItemActivity extends BaseActivity implements Applica
 	        	inventoryService.decrementInventory(inventoryToChange);
 	        }
 	        
-	        //Schedule the cart to expire
-	        DemoCartExpirationEvent event = (DemoCartExpirationEvent)this.context.getBean("demoCartExpirationEvent");
-	        order.setExpirationDate(orderService.getNextExpirationDate());
-	        event.schedule(order.getId(), order.getExpirationDate());
+	        //Reschedule if necesssary
+	        for (OrderItem item : order.getOrderItems()) {
+	        	if (item instanceof DiscreteOrderItem) {
+	        		sku = ((DiscreteOrderItem)item).getSku();
+	        		if (sku instanceof DemoSku && ((DemoSku)sku).getFlashSellable()) {
+	        			//Schedule the cart to expire
+	        	        DemoCartExpirationEvent event = (DemoCartExpirationEvent)this.context.getBean("demoCartExpirationEvent");
+	        			order.setExpirationDate(orderService.getNextExpirationDate());
+	        			event.schedule(order.getId(), order.getExpirationDate());
+	        			break;
+	        		}
+	        	}
+	        }
         }
         
         return context;

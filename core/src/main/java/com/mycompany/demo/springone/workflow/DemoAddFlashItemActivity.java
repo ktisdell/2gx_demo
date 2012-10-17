@@ -69,12 +69,20 @@ public class DemoAddFlashItemActivity extends BaseActivity implements Applicatio
 	        if (((DemoSku)sku).getFlashSellable()) {
 		        inventoryToDecrement.put(sku, request.getItemRequest().getQuantity());
 		        inventoryService.decrementInventory(inventoryToDecrement);
-		        
-		        //Schedule the cart to expire
-		        DemoCartExpirationEvent event = (DemoCartExpirationEvent)this.context.getBean("demoCartExpirationEvent");
-		        order.setExpirationDate(orderService.getNextExpirationDate());
-		        event.schedule(order.getId(), order.getExpirationDate());
 	        }
+        }
+        
+        for (OrderItem item : order.getOrderItems()) {
+        	if (item instanceof DiscreteOrderItem) {
+        		sku = ((DiscreteOrderItem)item).getSku();
+        		if (sku instanceof DemoSku && ((DemoSku)sku).getFlashSellable()) {
+        			//Schedule the cart to expire
+        	        DemoCartExpirationEvent event = (DemoCartExpirationEvent)this.context.getBean("demoCartExpirationEvent");
+        			order.setExpirationDate(orderService.getNextExpirationDate());
+        			event.schedule(order.getId(), order.getExpirationDate());
+        			break;
+        		}
+        	}
         }
         
         return context;

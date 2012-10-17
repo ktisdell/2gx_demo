@@ -26,7 +26,6 @@ $(function(){
 		closeEffect	: 'none'
 	};
 	
-	/*
 	function toMMSS(totalSeconds) {
 		var date = new Date(totalSeconds * 1000);
 		var mm = date.getMinutes();
@@ -38,28 +37,54 @@ $(function(){
 	    return mm + ":" + ss;
 	}
 	
-	$(function() {
+	function checkExpiration() {
 		var count = $('#expiresSeconds').text();
 		$("#expiresTime").text(toMMSS(count));
 		
 		expiryTimer = setInterval(function() {
-			$("#expiresTime").text(toMMSS(count));
+			var count = $('#expiresSeconds').text();
 			count--;
-			if (count < 0) {
-				clearInterval(expiryTimer);
-				$("#headerExpires").text("Expired!");
-				BLC.ajax({url: '/cart',
+			
+			
+			if (count >= 0) {
+				$('#expiresSeconds').text(count);
+				$("#expiresTime").text(toMMSS(count));
+			} else {
+				BLC.ajax({url: '/cart/checkExpiration',
 						type: "GET",
 						dataType: "json"
 					}, function(data, extraData) {
-						updateHeaderCartItemsCount(data.itemCount);
+						if (data.secondsUntilExpiration <= 0) {
+							clearInterval(expiryTimer);
+							$("#expiredMessage").removeClass("hidden");
+							$("#countdownMessage").addClass("hidden");
+							updateHeaderCartItemsCount(data.cartItemCount);
+							showAddToCartButton(1, 'cart');
+							showAddToCartButton(2, 'cart');
+						}
 					}
 				);
-				
 			}
 		}, 1000);
+	}
+	
+	function refreshExpiration() {
+		clearInterval(expiryTimer);
+		BLC.ajax({url: '/cart/checkExpiration',
+				type: "GET",
+				dataType: "json"
+			}, function(data, extraData) {
+				$('#expiresSeconds').text(data.secondsUntilExpiration);
+				$("#expiredMessage").addClass("hidden");
+				$("#countdownMessage").removeClass("hidden");
+				checkExpiration();
+			}
+		);
+	}
+	
+	$(function() {
+		checkExpiration();
 	});
-	*/
 	
 	// This will change the header "X item(s)" text to the new count and
 	// pluralization of "item"
@@ -165,6 +190,9 @@ $(function(){
 						} else {
 							HC.showNotification(data.productName + "  has been added to the cart!", 2000);
 						}
+						
+						refreshExpiration();
+						$('#headerExpires').removeClass('hidden');
 					}
 				}
 			);
@@ -188,6 +216,7 @@ $(function(){
                     }
                 }
 
+				refreshExpiration();
 				$('.fancybox-inner').html(data);
 			}
 		);
@@ -205,6 +234,7 @@ $(function(){
 				updateHeaderCartItemsCount(extraData.cartItemCount);
 				showAddToCartButton(extraData.productId, 'cart');
 				
+				refreshExpiration();
 				$('.fancybox-inner').html(data);
 			}
 		);

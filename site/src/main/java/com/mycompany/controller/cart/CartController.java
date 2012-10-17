@@ -37,6 +37,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.mycompany.demo.springone.entity.DemoOrder;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -53,9 +55,20 @@ public class CartController extends BroadleafCartController {
 		return super.cart(request, response, model);
 	}
 	
-	@RequestMapping(value = "", produces = "application/json")
-	public @ResponseBody Order cartAsJson(HttpServletRequest request, HttpServletResponse response, Model model) throws PricingException {
-	    return CartState.getCart();
+	@RequestMapping(value = "/checkExpiration")
+	public @ResponseBody Map<String, String> checkExpiration(HttpServletRequest request, HttpServletResponse response, Model model) throws PricingException {
+	    Map<String, String> data = new HashMap<String, String>();
+	    Long secondsUntilExpiration = 0L;
+	    
+    	Order cart = CartState.getCart();
+	    if (CartState.getCart() instanceof DemoOrder) {
+    	    secondsUntilExpiration = ((DemoOrder) cart).getSecondsUntilExpiration();
+	    }
+	    
+    	data.put("cartItemCount", String.valueOf(cart.getItemCount()));
+    	data.put("secondsUntilExpiration", secondsUntilExpiration.toString());
+		
+	    return data;
 	}
 	
 	/*

@@ -26,7 +26,43 @@ $(function(){
 		closeEffect	: 'none'
 	};
 	
-	// This will change the header "X item(s)" text to the new count and pluralization of "item"
+	/*
+	function toMMSS(totalSeconds) {
+		var date = new Date(totalSeconds * 1000);
+		var mm = date.getMinutes();
+		var ss = date.getSeconds();
+		if (ss < 10) {
+			ss = "0" + ss;
+		}
+		
+	    return mm + ":" + ss;
+	}
+	
+	$(function() {
+		var count = $('#expiresSeconds').text();
+		$("#expiresTime").text(toMMSS(count));
+		
+		expiryTimer = setInterval(function() {
+			$("#expiresTime").text(toMMSS(count));
+			count--;
+			if (count < 0) {
+				clearInterval(expiryTimer);
+				$("#headerExpires").text("Expired!");
+				BLC.ajax({url: '/cart',
+						type: "GET",
+						dataType: "json"
+					}, function(data, extraData) {
+						updateHeaderCartItemsCount(data.itemCount);
+					}
+				);
+				
+			}
+		}, 1000);
+	});
+	*/
+	
+	// This will change the header "X item(s)" text to the new count and
+	// pluralization of "item"
 	function updateHeaderCartItemsCount(newCount) {
 
         //Pull the word that was set in the html from the internationalized version from the locale

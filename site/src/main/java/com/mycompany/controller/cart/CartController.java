@@ -20,6 +20,7 @@ package com.mycompany.controller.cart;
 import org.broadleafcommerce.core.catalog.domain.Product;
 import org.broadleafcommerce.core.inventory.exception.ConcurrentInventoryModificationException;
 import org.broadleafcommerce.core.inventory.exception.InventoryUnavailableException;
+import org.broadleafcommerce.core.order.domain.Order;
 import org.broadleafcommerce.core.order.service.exception.AddToCartException;
 import org.broadleafcommerce.core.order.service.exception.RemoveFromCartException;
 import org.broadleafcommerce.core.order.service.exception.RequiredAttributeNotProvidedException;
@@ -38,6 +39,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +51,11 @@ public class CartController extends BroadleafCartController {
 	@RequestMapping("")
 	public String cart(HttpServletRequest request, HttpServletResponse response, Model model) throws PricingException {
 		return super.cart(request, response, model);
+	}
+	
+	@RequestMapping(value = "", produces = "application/json")
+	public @ResponseBody Order cartAsJson(HttpServletRequest request, HttpServletResponse response, Model model) throws PricingException {
+	    return CartState.getCart();
 	}
 	
 	/*

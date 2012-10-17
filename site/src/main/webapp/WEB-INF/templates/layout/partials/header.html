@@ -24,12 +24,15 @@
 
             <span id="headerCartItemWordSingluar_i18n" style="display: none;" th:text="#{home.item}">item</span>
             <span id="headerCartItemWordPlural_i18n" style="display: none;" th:text="#{home.items}">items</span>
-            <span th:text="#{home.items}">Welcome</span>
 			<a id="cartLink" class="fancycart" th:href="@{/cart}">
 				<img th:src="@{/img/shopping_cart.png}" alt="Shopping Cart Icon" />
 				&nbsp; 
 				<span class="headerCartItemsCount" th:text="${cart.itemCount}" />
 				<span class="headerCartItemsCountWord" th:text="${cart.itemCount == 1} ? #{home.item} :  #{home.items}" />
+<!--                 <span id="headerExpires"> -->
+<!--                     <span id="expiresSeconds">2</span> -->
+<!--                     Expires in <span id="expiresTime"></span> -->
+<!--                 </span> -->
 			</a>
 
 		</div>

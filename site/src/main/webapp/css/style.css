@@ -350,6 +350,22 @@ header {
 	right: 0;
 }
 
+#headerExpires {
+	font-size: 12px;
+}
+    
+    #headerExpires:before {
+        content: "("
+    }
+    
+    #headerExpires:after {
+        content: ")"
+    }
+    
+    #expiresSeconds {
+        display: none;
+    }
+
 	#header_content #search .search {
 		height: 12px;
 		border: 1px solid #D5D1D1;
